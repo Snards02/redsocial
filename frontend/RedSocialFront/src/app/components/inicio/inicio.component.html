@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="update ml-auto mr-auto">
+        <button type="submit" (click)="openModal(crearpostmodal)" class="btn btn-primary btn-round">Crear Post</button>
+    </div>
+</div>
+<div class="col-md-10 m-auto">
+    <div class="card ">
+        <div class="card-header">
+            <h4 class="card-title text-center">Posts de Usuarios</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled team-members">
+                <li *ngFor="let post of listPost">
+                    <div class="row">
+                        <div class="col-md-1 col-1">
+                            <div class="avatar text-center">
+                                <img src="assets/img/default-avatar.png" alt="Circle Image"
+                                    class="img-circle img-no-padding img-responsive">
+                            </div>
+                        </div>
+                        <div class="col-md-11 col-8 text-left">
+                            {{parceJSONtoUser(post.userId).fullName}} - {{post.title}}
+                            <br />
+                            <span class="text-muted">
+                                <small>{{post.content}}</small>
+                            </span>
+                        </div>
+                        
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<ng-template #crearpostmodal>
+    <div class="col-md-12 ">
+        <div class="card card-user">
+          <div class="card-header">
+            <h5 class="card-title"></h5>
+          </div>
+          <div class="card-body">
+            <form>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Titulo del post</label>
+                      <input type="text" class="form-control" placeholder="Titulo" required [(ngModel)]="this.post.title" [ngModelOptions]="{ standalone: true }">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Mensaje</label>
+                      <textarea class="form-control textarea" required [(ngModel)]="this.post.content" [ngModelOptions]="{ standalone: true }">Escriba su mensaje</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="update m-auto">
+                    <button type="submit" (click)="this.createPost()" class="btn btn-primary btn-round">Publicar</button>
+                  </div>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+</ng-template>
