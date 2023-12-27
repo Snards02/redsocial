@@ -16,7 +16,7 @@ class PostController {
 
   public async getAllPosts(_req: Request, res: Response): Promise<void> {
     try {
-      const posts = await Post.find();
+      const posts = await Post.find().populate("userId");
       res.status(200).json(posts);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -25,7 +25,7 @@ class PostController {
 
   public async getPostById(_req: Request, res: Response): Promise<void> {
     try {
-      const post = await Post.findById(_req.params.postId);
+      const post = await Post.find({userId: _req.params.userId});
       if (!post) {
         res.status(404).json({ message: 'Publicación no encontrada' });
         return;
@@ -38,6 +38,8 @@ class PostController {
 
   public async updatePost(_req: Request, res: Response): Promise<void> {
     try {
+      console.log("putpost", _req.params.postId);
+      
       const updatedPost = await Post.findByIdAndUpdate(
         _req.params.postId,
         _req.body,

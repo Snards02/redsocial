@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/user';
 import jwt from "jsonwebtoken";
-import { TOKEN_KEY }  from "../middleware/verifyToken";
+import { TOKEN_KEY } from "../middleware/verifyToken";
 
 class UserController {
   public async register(_req: Request, res: Response): Promise<void> {
@@ -9,26 +9,31 @@ class UserController {
       const { fullName, age, email, password } = _req.body;
       const newUser = new User({ fullName, age, email, password });
       await newUser.save();
-      res.status(201).json({ message: 'Usuario registrado exitosamente' });
+      let userlogin: JSON = this.JWTCreate(newUser)
+      res.status(201).json(userlogin);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
+  }
+  private JWTCreate(user: any): JSON {
+    const token = jwt.sign(
+      { email: user.email },
+      TOKEN_KEY
+    );
+    let respuesta = { ...user._doc, token }
+    return respuesta
   }
 
   public async login(_req: Request, res: Response): Promise<void> {
     console.log("entra", _req)
     const email = _req.body.email;
     const psw = _req.body.password
-    let user = await this.getUserByEmailbyPsw(email,psw)
+    let user = await this.getUserByEmailbyPsw(email, psw)
+    console.log("usuario:", user)
     if (user) {
-        const token = jwt.sign(
-            {userID:user.id, email:user.email},
-            TOKEN_KEY
-        );
-        let respuesta = {... user, token}
-        res.status(200).json(respuesta)
+      res.status(200).json(this.JWTCreate(user))
     } else {
-        res.status(400).send("credenciales incorrectas")
+      res.status(400).send("credenciales incorrectas")
     }
 
   }
@@ -43,15 +48,17 @@ class UserController {
     }
   }
 
-  public async getUserByEmailbyPsw(email: string, pws:string): Promise<any> {
+  public async getUserByEmailbyPsw(email: string, pws: string): Promise<any> {
     try {
-      const user = await User.find({"email":email, "password":pws});
-      if (!user) {
-        return false ;
+      const users = await User.find({ "email": email, "password": pws });
+      if (users.length == 0) {
+        return null
       }
+      let user = new User(users[0])
+      console.log("user pe", user, users)
       return user;
     } catch (error: any) {
-      return  error.message;
+      return error.message;
     }
   }
 

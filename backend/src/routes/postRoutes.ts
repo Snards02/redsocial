@@ -6,7 +6,7 @@ const router: Router = Router();
 const postController = new PostController();
 
 // Rutas para operaciones de posts
-router.post('/', (req: Request, res: Response) => {
+router.post('/create', verifyToken, (req: Request, res: Response) => {
   postController.createPost(req, res);
 });
 
@@ -14,7 +14,7 @@ router.get('/', (req: Request, res: Response) => {
   postController.getAllPosts(req, res);
 });
 
-router.get('/:postId', verifyToken, (req: Request, res: Response) => {
+router.get('/:userId', verifyToken, (req: Request, res: Response) => {
   postController.getPostById(req, res);
 });
 

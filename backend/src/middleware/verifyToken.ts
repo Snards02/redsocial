@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 export const TOKEN_KEY: string = 'ABCDEF-KEY'
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization;
+  const bearer = req.headers.authorization;
+    let token = bearer?.replace("Bearer ",'')
     console.log("verifytoken",token);
     
   if (!token) {
